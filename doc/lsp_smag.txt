@@ -1,0 +1,127 @@
+*lsp_smag.txt*				Smart tags by language server support
+
+Version:  0.1
+Author:   Thore Weilbier <thore@weilbier.net>
+License:  MIT
+
+==============================================================================
+						  *lsp_smag_table_of_contents*
+TABLE OF CONTENTS~
+
+Introduction ....................................... |lsp_smag_introduction|
+Usage ..................................................... |lsp_smag_usage|
+Variables ............................................. |lsp_smag_functions|
+TODO-List ............................................. |lsp_smag_todo_list|
+
+
+==============================================================================
+						       *lsp_smag_introduction*
+INTRODUCTION~
+
+This plugin allows to seamlessly integrate the language server protocol in
+NeoVim. It leverages the |tagfunc| option to customize how tags are searched.
+Instead of searching in a tag file, this plugin queries a possibly attached
+language client. It queries the server for the definition, declaration,
+implementation and type definition. The resulting list combines all of them
+together. It can be partially empty if the server doesn't provide all
+capabilities or a response was empty. In case there is no language client
+connected to the current buffer, it falls back to the default functionality
+with a tag file.
+
+The main advantage is simplify the whole process of either using a tag file or
+the |vim.lsp.client|. Furthermore does this also combine all location lookup
+functions together. Instead of defining a separated mapping for the
+definition, declaration, implementation and type definition this provides all
+at once. It can be configured which of them should have the highest priority.
+So it is still possible to jump directly or select from a list of all
+locations.
+
+After all this also preserves the |tag-stack|, allowing to navigate as always
+without any downside of missing functionaries due to LSP. The same goes for
+preview functionalities.
+
+
+==============================================================================
+						       *lsp_smag_introduction*
+USAGE~
+
+The plugin works out of the box. Having the plugin loaded, all |tag| related
+commands automatically profit from it. To jump without minding any other
+locations use `:tag`. To leverage the multiple locations, the `:tjump` is
+the better choice. It will jump directly if there is only one option. Else it
+shows all locations and allow to select where to jump to. To always select use
+|:tselect|.
+
+Having the |tag-stack| is always convenient. It allows to jump to a definition
+or any other location, look around and then jump back where you came from
+(|CTRL-T|). This ignores any other jumps you did in between, but don't push to
+the |tag-stack|. Also switching between the different locations with `:tnext`
+and consorts. Preview it with `:pjump`...
+
+
+Limitations:~
+
+Mind that when the language client gets used, the provided [name] does not
+apply anymore. The requests to the language server work based on the current
+cursor position. Unfortunately the [name] must be still provided, since the
+commands will not work or work differently else. Checkout the |tags|
+documentation for details. As further consequence it is not possible to search
+for tags globally. As long as there is a language client attached to the
+current buffer, the provided [name] will be ignored. It only applies for the
+fall back case when using the tag file again. To make the commands still
+work and provide tag support, extend your mappings with the current word
+under the cursor. E.g.: >
+
+  nnormap gd <cmd>tjump expand('<cword>')<CR>
+
+This limitation may change in a future version. At the moment their is the
+twist that a [name] must be provided. Thereby it is hard to differ if it
+should use the default approach (cursor location) or doing a search by
+a custom pattern. To search for tag-like objects, this plugin is not made. It
+is recommended to use the |vim.lsp.buf.document_symbol()| or
+|vim.lsp.buf.workspace_symbol()| functions or a plugin leveraging the related
+language server providers.
+
+
+==============================================================================
+							  *lsp_smag_variables*
+VARIABLES~
+
+The following variables can be set to customize the behavior of this plugin.
+
+|g:lsp_smag_enabled_providers|
+
+  The language server providers to query for locations. Per default are all
+  available providers enabled. It doesn't matter which providers are actually
+  supported by each respective server. Missing capabilities get ignored.
+
+  Default:~
+    [`definition`, `declaration`, `implementation`, `typeDefinition`]
+
+|g:lsp_smag_tag_kind_priority_order|
+
+  The order to sort the retrieved locations by the providers. Therefore the
+  entries are also the names of the providers. The order is the same as the
+  configured list. Providers which are not listed will have the least
+  priority.
+
+  Default:~
+    [`definition`, `declaration`, `implementation`, `typeDefinition`]
+
+  Examples:~
+    [ `declaration`, `implementation`, `definition`, `typeDefinition` ]
+    [ `declaration`, `implementation`]
+
+
+==============================================================================
+							  *lsp_smag_todo_list*
+TODO-List~
+
+  - validate if it make sense to check if a client with certain capabilities
+    is available, since so far this just leads to (partially) empty results
+  - allow to search for tags by language server (symbols)
+
+
+==============================================================================
+
+vim:tw=78:ts=8:noet:ft=help:norl:
