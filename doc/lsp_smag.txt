@@ -28,9 +28,9 @@ capabilities or a response was empty. In case there is no language client
 connected to the current buffer, it falls back to the default functionality
 with a tag file.
 
-The main advantage is simplify the whole process of either using a tag file or
-the |vim.lsp.client|. Furthermore does this also combine all location lookup
-functions together. Instead of defining a separated mapping for the
+The main advantage is to simplify the whole process of either using a tag file
+or the |vim.lsp.client|. Furthermore does this also combine all location
+lookup functions together. Instead of defining a separated mapping for the
 definition, declaration, implementation and type definition this provides all
 at once. It can be configured which of them should have the highest priority.
 So it is still possible to jump directly or select from a list of all
