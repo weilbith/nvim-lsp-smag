@@ -70,9 +70,9 @@ for tags globally. As long as there is a language client attached to the
 current buffer, the provided [name] will be ignored. It only applies for the
 fall back case when using the tag file again. To make the commands still
 work and provide tag support, extend your mappings with the current word
-under the cursor. E.g.: >
+under the cursor (|<C-R_>_<C-W>|). E.g.: >
 
-  nnormap gd <cmd>tjump expand('<cword>')<CR>
+  nnoremap gd <cmd>execute 'tjump  ' . expand('<cword>')<CR>
 
 This limitation may change in a future version. At the moment their is the
 twist that a [name] must be provided. Thereby it is hard to differ if it

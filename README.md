@@ -47,8 +47,8 @@ current cursor location is used by the server to determine the results.
 Nevertheless it is necessary to define the `[name]` parameter. This parameter
 gets simply ignored as long as no tag file is used. Else the ex-commands work
 different for empty `[name]` parameter. There it is recommended to use mappings
-like `<cmd>tjump expand('<cword>')` or type `<C-R><C-W>` for interactive
-solutions. Thereby it will work for any case. To search for tags, I recommend to
-use the symbols by the language server. Checkout
+like `<cmd>execute 'tjump ' . expand('<cword>')<CR>` or type `<C-R><C-W>` for
+interactive solutions. Thereby it will work for any case. To search for tags,
+I recommend to use the symbols by the language server. Checkout
 `vim.lsp.bug.document_symbols()` (and the `workspace` version) or plugins like
 [nvim-lsp-denite](https://github.com/weilbith/nvim-lsp-denite).
