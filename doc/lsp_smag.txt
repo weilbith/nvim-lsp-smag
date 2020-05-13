@@ -42,7 +42,7 @@ preview functionalities.
 
 
 ==============================================================================
-						       *lsp_smag_introduction*
+							      *lsp_smag_usage*
 USAGE~
 
 The plugin works out of the box. Having the plugin loaded, all |tag| related
