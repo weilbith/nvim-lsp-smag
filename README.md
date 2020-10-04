@@ -39,6 +39,11 @@ highest priority. The priority sort order can be defined in the configuration.
 Furthermore it is also configurable which language server prover to query for
 locations.
 
+_Checkout the [docs](https://github.com/weilbith/nvim-lsp-smag/blob/master/doc/lsp_smag.txt) (`:help lsp-smag.txt`)
+to read about how to configure the behavior of this plugin._
+
+---
+
 **Warning:**
 
 Using this plugin will remove the ability to search for arbitrary tags with any
