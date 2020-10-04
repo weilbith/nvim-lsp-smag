@@ -4,6 +4,7 @@ local lsp = vim.lsp
 local tag_formatting = require "lsp_smag.tags.formatting"
 local list_utils = require "lsp_smag.utils.lists"
 local lsp_methods = require "lsp_smag.lsp.methods"
+local lsp_server_capabilities = require "lsp_smag.lsp.server_capabilities"
 local tag_kinds = require "lsp_smag.tags.kinds"
 
 local function get_word_under_cursor()
@@ -31,10 +32,21 @@ local function merge_all_client_responses(response)
     return results
 end
 
+local function provider_is_available(provider_name)
+    -- TODO: Evaluate how to interact with multiple clients.
+    local first_client = lsp.buf_get_clients()[1]
+    local capability = lsp_server_capabilities[provider_name]
+
+    if first_client == nil then
+        return false
+    else
+        return first_client.resolved_capabilities[capability]
+    end
+end
+
 local function get_locations_from_server(method)
     local buffer_number = api.nvim_get_current_buf()
     local parameter = lsp.util.make_position_params()
-    -- TODO: verify that server provides capability
     local response = lsp.buf_request_sync(buffer_number, method, parameter)
     return merge_all_client_responses(response)
 end
@@ -51,10 +63,14 @@ local function convert_locations_to_tags(locations, tag_kind)
 end
 
 local function get_tags_of_provider(provider_name)
-    local lsp_method = lsp_methods[provider_name]
-    local tag_kind = tag_kinds[provider_name]
-    local locations = get_locations_from_server(lsp_method)
-    return convert_locations_to_tags(locations, tag_kind)
+    if not provider_is_available(provider_name) then
+        return {}
+    else
+        local lsp_method = lsp_methods[provider_name]
+        local tag_kind = tag_kinds[provider_name]
+        local locations = get_locations_from_server(lsp_method)
+        return convert_locations_to_tags(locations, tag_kind)
+    end
 end
 
 return {

@@ -93,7 +93,9 @@ The following variables can be set to customize the behavior of this plugin.
 
   The language server providers to query for locations. Per default are all
   available providers enabled. It doesn't matter which providers are actually
-  supported by each respective server. Missing capabilities get ignored.
+  supported by each respective server. If a server does not support a specific
+  provider, this gets detected early and the request won't be even send to
+  safe time.
 
   Default:~
     [`definition`, `declaration`, `implementation`, `typeDefinition`]
@@ -117,9 +119,8 @@ The following variables can be set to customize the behavior of this plugin.
 							  *lsp_smag_todo_list*
 TODO-List~
 
-  - validate if it make sense to check if a client with certain capabilities
-    is available, since so far this just leads to (partially) empty results
   - allow to search for tags by language server (symbols)
+  - how to handle multiple attached clients to buffer
 
 
 ==============================================================================
