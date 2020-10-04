@@ -1,5 +1,4 @@
 local vim = vim
-local api = vim.api
 local list_utils = require "lsp_smag.utils.lists"
 local tag_sorting = require "lsp_smag.tags.sorting"
 local lsp_provider = require "lsp_smag.lsp.provider"
@@ -31,9 +30,11 @@ function lsp_smag.tagfunc(_, flags, _)
         return nil
     end
 
+    local enabled_providers =
+        vim.g.lsp_smag_enabled_providers or {"definition", "declaration", "implementation", "typeDefinition"}
     local tags = {}
 
-    for _, provider_entry in ipairs(api.nvim_get_var("lsp_smag_enabled_providers")) do
+    for _, provider_entry in ipairs(enabled_providers) do
         local tags_by_provider = query_provider(provider_entry)
         list_utils.extend(tags, tags_by_provider)
     end

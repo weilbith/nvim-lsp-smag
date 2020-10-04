@@ -1,12 +1,12 @@
 local vim = vim
-local api = vim.api
 local string_utils = require "lsp_smag.utils.strings"
 local list_utils = require "lsp_smag.utils.lists"
 local lsp_provider_names = require "lsp_smag.lsp.provider_names"
 local lsp_tag_kinds = require "lsp_smag.tags.kinds"
 
 local function get_tag_kind_priority_order()
-    local order_as_provider_entries = api.nvim_get_var("lsp_smag_tag_kind_priority_order")
+    local order_as_provider_entries =
+        vim.g.lsp_smag_enabled_providers or {"definition", "declaration", "implementation", "typeDefinition"}
     local order_as_tag_kinds = {}
 
     for _, provider_entry in ipairs(order_as_provider_entries) do
