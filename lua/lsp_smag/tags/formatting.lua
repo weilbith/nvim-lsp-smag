@@ -1,4 +1,5 @@
 local vim = vim
+local lsp = vim.lsp
 local api = vim.api
 
 local M = {}
@@ -21,10 +22,12 @@ function M.lsp_location_to_tag(name, kind, lsp_location)
     local uri = lsp_location.uri or lsp_location.targetUri
     local range = lsp_location.range or lsp_location.targetRange
     local line = range.start.line + 1
+    local bufnr = vim.uri_to_bufnr(uri)
+    local col = lsp.util._get_line_byte_from_position(bufnr, range.start)
 
     return {
         name = name,
-        cmd = tostring(line),
+        cmd = '/\\%' .. tostring(line) .. 'l\\%' .. tostring(col+1) .. 'c/',
         kind = kind .. " ", -- add a gap to the tag name
         filename = get_path(uri),
         user_data = read_line(uri, line)
