@@ -1,5 +1,4 @@
 local vim = vim
-local lsp = vim.lsp
 local api = vim.api
 
 local M = {}
