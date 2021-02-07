@@ -18,12 +18,36 @@ local function read_line(uri, line_index)
     return lines[line_index]
 end
 
+local function line_byte_from_position(uri, position)
+    local col = position.character
+    if col > 0 then
+        local line = position.line
+        local lines
+        local bufnr = vim.uri_to_bufnr(uri)
+        if api.nvim_buf_is_loaded(bufnr) then
+            lines = api.nvim_buf_get_lines(bufnr, line, line + 1, false)
+        else
+            local file_path = vim.uri_to_fname(uri)
+            lines = api.nvim_call_function("readfile", {file_path, "", line + 1})
+            lines = {lines[line + 1]}
+        end
+
+        if #lines > 0 then
+            local ok, result = pcall(vim.str_byteindex, lines[1], col)
+
+            if ok then
+                return result
+            end
+        end
+    end
+    return col
+end
+
 function M.lsp_location_to_tag(name, kind, lsp_location)
     local uri = lsp_location.uri or lsp_location.targetUri
     local range = lsp_location.range or lsp_location.targetRange
     local line = range.start.line + 1
-    local bufnr = vim.uri_to_bufnr(uri)
-    local col = lsp.util._get_line_byte_from_position(bufnr, range.start)
+    local col = line_byte_from_position(uri, range.start)
 
     return {
         name = name,
