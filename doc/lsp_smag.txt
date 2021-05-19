@@ -18,10 +18,10 @@ TODO-List ............................................. |lsp_smag_todo_list|
 						       *lsp_smag_introduction*
 INTRODUCTION~
 
-This plugin allows to seamlessly integrate the language server protocol in
+This plugin allows to seamlessly integrate the language server protocol into
 NeoVim. It leverages the |tagfunc| option to customize how tags are searched.
-Instead of searching in a tag file, this plugin queries a possibly attached
-language client. It queries the server for the definition, declaration,
+Instead of searching in a tag file, this plugin queries all attached language
+clients. It queries the servers for the definition, declaration,
 implementation and type definition. The resulting list combines all of them
 together. It can be partially empty if the server doesn't provide all
 capabilities or a response was empty. In case there is no language client
@@ -29,16 +29,12 @@ connected to the current buffer, it falls back to the default functionality
 with a tag file.
 
 The main advantage is to simplify the whole process of either using a tag file
-or the |vim.lsp.client|. Furthermore does this also combine all location
-lookup functions together. Instead of defining a separated mapping for the
+or the |vim.lsp.client|. Furthermore it also combines all location lookup
+functions together. Instead of defining a separated mapping for the
 definition, declaration, implementation and type definition this provides all
 at once. It can be configured which of them should have the highest priority.
 So it is still possible to jump directly or select from a list of all
 locations.
-
-After all this also preserves the |tag-stack|, allowing to navigate as always
-without any downside of missing functionaries due to LSP. The same goes for
-preview functionalities.
 
 
 ==============================================================================
