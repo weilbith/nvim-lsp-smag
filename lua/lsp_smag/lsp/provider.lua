@@ -15,40 +15,32 @@ local function client_response_is_error(client_response)
     return client_response["error"] ~= nil
 end
 
-local function merge_all_client_responses(response)
-    if response == nil then
+local function get_locations_from_client(client, method, parameter, buffer_number)
+    if not client.supports_method(method) then
         return {}
     end
 
-    local results = {}
+    local response = client.request_sync(method, parameter, nil, buffer_number)
 
-    for _, client_response in ipairs(response) do
-        if not client_response_is_error(client_response) then
-            list_utils.extend(results, client_response.result)
-        end
-        -- TODO: Notify client errors?
+    if client_response_is_error(response) then
+        return {}
     end
 
-    return results
+    return response.result
 end
 
-local function provider_is_available(provider_name)
-    -- TODO: Evaluate how to interact with multiple clients.
-    local first_client = lsp.buf_get_clients()[1]
-    local capability = lsp_server_capabilities[provider_name]
-
-    if first_client == nil then
-        return false
-    else
-        return first_client.resolved_capabilities[capability]
-    end
-end
-
-local function get_locations_from_server(method)
+local function get_locations_from_all_clients(method)
     local buffer_number = api.nvim_get_current_buf()
     local parameter = lsp.util.make_position_params()
-    local response = lsp.buf_request_sync(buffer_number, method, parameter)
-    return merge_all_client_responses(response)
+    local buffer_clients = lsp.buf_get_clients(buffer_number)
+    local all_locations = {}
+
+    for _, client in ipairs(buffer_clients) do
+        local locations = get_locations_from_client(client, method, parameter, buffer_number)
+        list_utils.extend(all_locations, locations)
+    end
+
+    return all_locations
 end
 
 local function convert_locations_to_tags(locations, tag_kind)
@@ -63,14 +55,10 @@ local function convert_locations_to_tags(locations, tag_kind)
 end
 
 local function get_tags_of_provider(provider_name)
-    if not provider_is_available(provider_name) then
-        return {}
-    else
-        local lsp_method = lsp_methods[provider_name]
-        local tag_kind = tag_kinds[provider_name]
-        local locations = get_locations_from_server(lsp_method)
-        return convert_locations_to_tags(locations, tag_kind)
-    end
+    local lsp_method = lsp_methods[provider_name]
+    local tag_kind = tag_kinds[provider_name]
+    local locations = get_locations_from_all_clients(lsp_method)
+    return convert_locations_to_tags(locations, tag_kind)
 end
 
 return {
