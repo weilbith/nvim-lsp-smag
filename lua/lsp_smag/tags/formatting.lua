@@ -21,10 +21,12 @@ function M.lsp_location_to_tag(name, kind, lsp_location)
     local uri = lsp_location.uri or lsp_location.targetUri
     local range = lsp_location.range or lsp_location.targetRange
     local line = range.start.line + 1
+    local column = range.start.character + 1
+    local cmd = 'normal ' .. line .. 'G' .. column .. '|'
 
     return {
         name = name,
-        cmd = tostring(line),
+        cmd = cmd,
         kind = kind .. " ", -- add a gap to the tag name
         filename = get_path(uri),
         user_data = read_line(uri, line)
