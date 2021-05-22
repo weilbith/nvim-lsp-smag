@@ -22,7 +22,7 @@ local function get_locations_from_client(client, method, parameter, buffer_numbe
 
     local response = client.request_sync(method, parameter, nil, buffer_number)
 
-    if client_response_is_error(response) then
+    if response == nil or client_response_is_error(response) then
         return {}
     end
 
