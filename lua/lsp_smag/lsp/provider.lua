@@ -11,10 +11,6 @@ local function get_word_under_cursor()
     return api.nvim_call_function("expand", {"<cword>"})
 end
 
-local function client_response_is_error(client_response)
-    return client_response["error"] ~= nil
-end
-
 local function get_locations_from_client(client, method, parameter, buffer_number)
     if not client.supports_method(method) then
         return {}
@@ -22,11 +18,11 @@ local function get_locations_from_client(client, method, parameter, buffer_numbe
 
     local response = client.request_sync(method, parameter, nil, buffer_number)
 
-    if response == nil or client_response_is_error(response) then
-        return {}
+    if response ~= nil and response.result ~= nil then
+      return response.result
+    else
+      return {}
     end
-
-    return response.result
 end
 
 local function get_locations_from_all_clients(method)
