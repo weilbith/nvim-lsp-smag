@@ -110,6 +110,13 @@ The following variables can be set to customize the behavior of this plugin.
     [ `declaration`, `implementation`, `definition`, `typeDefinition` ]
     [ `declaration`, `implementation`]
 
+|g:lsp_smag_fallback_tags|
+
+  Whether to fallback to regular tags (e.g. ctags) when the language server
+  didn't return a tag or the LSP client is not running.
+
+  Default: `nil`
+
 
 ==============================================================================
 							  *lsp_smag_todo_list*
