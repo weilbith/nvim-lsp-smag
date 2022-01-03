@@ -40,5 +40,9 @@ function lsp_smag.tagfunc(_, flags, _)
     end
 
     tag_sorting.sort_tags_by_kind(tags)
+    if not next(tags) and vim.g.lsp_smag_fallback_tags then
+        return nil
+    end
+
     return tags
 end
